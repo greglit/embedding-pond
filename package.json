@@ -1,0 +1,22 @@
+{
+  "name": "embedding-pond",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.8.1",
+    "ml-pca": "^4.1.1",
+    "three": "^0.167.1",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.4",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1"
+  }
+}
