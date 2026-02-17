@@ -1,6 +1,5 @@
 <template>
   <section class="pond-scene">
-    <CausticsCanvas />
     <div class="pond-ripples">
       <span v-for="ripple in ripples" :key="ripple.id" :style="ripple.style"></span>
     </div>
@@ -43,7 +42,6 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import CausticsCanvas from './CausticsCanvas.vue'
 
 type Lily = {
   id: string
