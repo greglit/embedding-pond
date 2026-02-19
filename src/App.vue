@@ -1,6 +1,6 @@
 <template>
-  <main class="pond-app">
-    <div class="pond-title" :class="{ compact: lilies.length > 0 }">
+  <main class="pond-app" :class="{ 'is-planting': Boolean(travelingLily) }">
+    <div class="pond-title" :class="{ compact: titleCompact }">
       <h1>The Embedding Pond</h1>
       <h2>Grow beautiful waterlilies and learn how AI makes sense of your data.</h2>
     </div>
@@ -22,18 +22,32 @@
       <span>Info</span>
     </button>
 
-    <LilyCreator
-      v-if="showCreator"
-      :is-loading="isEmbedding"
-      :preview="draftLily"
-      :is-first-lily="lilies.length === 0"
-      @close="closeCreator"
-      @grow="handleGrow"
-      @plant="handlePlant"
-    />
+    <button
+      v-if="scientificMode"
+      class="science-button"
+      type="button"
+      @click="toggleScientific"
+      :aria-expanded="showScientific"
+    >
+      <span class="science-button__icon" aria-hidden="true">🧪</span>
+      <span>Science</span>
+    </button>
+
+    <Transition name="overlay-fade">
+      <LilyCreator
+        v-if="showCreator"
+        :is-loading="isEmbedding"
+        :preview="draftLily"
+        :is-first-lily="lilies.length === 0"
+        @close="closeCreator"
+        @grow="handleGrow"
+        @plant="handlePlant"
+        @phase="creatorPhase = $event"
+      />
+    </Transition>
 
     <LilyPopover
-      v-if="activeLily"
+      v-if="activeLily && !showScientific"
       mode="click"
       :lily="activeLily"
       @close="activeId = null"
@@ -51,33 +65,57 @@
       <InfoPopover @close="showInfo = false" />
     </div>
 
-    <div v-if="travelingLily" class="traveling-lily" :style="travelStyle">
-      <svg viewBox="0 0 120 120" aria-hidden="true">
-        <path
-          :d="travelingLily.shapePath"
-          :fill="travelingLily.color"
-          :stroke="travelingLily.outline"
-          stroke-width="3"
-        />
-        <g aria-hidden="true">
-          <circle cx="60" cy="54" r="3.3" fill="rgba(255, 244, 168, 0.95)" />
-          <circle cx="53" cy="64" r="2.9" fill="rgba(255, 244, 168, 0.88)" />
-          <circle cx="67" cy="65" r="2.8" fill="rgba(255, 244, 168, 0.82)" />
-        </g>
-      </svg>
+    <ScientificPopover
+      v-if="scientificMode && showScientific"
+      :enabled="alignmentEnabled"
+      :alpha="alignmentAlpha"
+      @close="showScientific = false"
+      @update:enabled="alignmentEnabled = $event"
+      @update:alpha="alignmentAlpha = $event"
+    />
+
+    <div
+      v-if="travelingLily"
+      class="traveling-lily"
+      :class="{ armed: travelArmed, visible: travelVisible }"
+      :style="travelStyle"
+      aria-hidden="true"
+    >
+      <div class="traveling-lily__inner" :class="{ armed: travelArmed }" :style="travelInnerStyle">
+        <div class="lily-drift">
+          <div class="lily-scale">
+            <svg viewBox="0 0 120 120">
+              <path :d="travelingLily.shapePath" :fill="travelingLily.color" :stroke="travelingLily.outline" stroke-width="3" />
+              <g class="lily-stamen">
+                <circle cx="60" cy="54" r="3.3" fill="rgba(255, 244, 168, 0.95)" />
+                <circle cx="53" cy="64" r="2.9" fill="rgba(255, 244, 168, 0.88)" />
+                <circle cx="67" cy="65" r="2.8" fill="rgba(255, 244, 168, 0.82)" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import PondScene from './components/PondScene.vue'
 import LilyCreator from './components/LilyCreator.vue'
 import LilyPopover from './components/LilyPopover.vue'
 import InfoPopover from './components/InfoPopover.vue'
+import ScientificPopover from './components/ScientificPopover.vue'
 import { computeEmbedding } from './utils/embedding'
 import { computePcaLayout } from './utils/pca'
 import { embeddingToPath } from './utils/shape'
+import { buildVectorsForPca } from './utils/centroidAlign'
+
+const scientificMode = new URLSearchParams(window.location.search).get('mode') === 'scientific'
+const alignmentEnabled = ref(false)
+const alignmentAlpha = ref(0.75)
+
+const plantedActiveScale = 1.18
 
 type LilyInput = {
   id: string
@@ -102,12 +140,17 @@ const hoverId = ref<string | null>(null)
 const hoverAnchor = ref<{ x: number; y: number } | null>(null)
 const showCreator = ref(false)
 const showInfo = ref(false)
+const showScientific = ref(false)
 const isEmbedding = ref(false)
 const draftLily = ref<LilyInput | null>(null)
+const creatorPhase = ref<'idle' | 'embedding' | 'ready'>('idle')
+const travelArmed = ref(false)
+const travelVisible = ref(false)
 const travelingLily = ref<
   | (LilyInput & {
       x: number
       y: number
+      scale: number
     })
   | null
 >(null)
@@ -116,6 +159,8 @@ const activeLily = computed(() => lilies.value.find((lily) => lily.id === active
 
 const hoverLily = computed(() => lilies.value.find((lily) => lily.id === hoverId.value) ?? null)
 
+const titleCompact = computed(() => lilies.value.length > 0 || (lilies.value.length === 0 && Boolean(travelingLily.value)))
+
 const travelStyle = computed(() => {
   if (!travelingLily.value) return {}
   return {
@@ -123,14 +168,29 @@ const travelStyle = computed(() => {
   }
 })
 
+const travelInnerStyle = computed(() => {
+  if (!travelingLily.value) return {}
+  return {
+    transform: `scale(${travelingLily.value.scale})`,
+  }
+})
+
 const openCreator = () => {
   draftLily.value = null
+  creatorPhase.value = 'idle'
+  travelingLily.value = null
+  travelArmed.value = false
+  travelVisible.value = false
   showCreator.value = true
 }
 
 const closeCreator = () => {
   showCreator.value = false
   draftLily.value = null
+  creatorPhase.value = 'idle'
+  travelingLily.value = null
+  travelArmed.value = false
+  travelVisible.value = false
 }
 
 const toggleInfo = () => {
@@ -140,10 +200,23 @@ const toggleInfo = () => {
     hoverId.value = null
     hoverAnchor.value = null
     showCreator.value = false
+    showScientific.value = false
+  }
+}
+
+const toggleScientific = () => {
+  showScientific.value = !showScientific.value
+  if (showScientific.value) {
+    activeId.value = null
+    hoverId.value = null
+    hoverAnchor.value = null
+    showCreator.value = false
+    showInfo.value = false
   }
 }
 
 const handleSelect = (id: string) => {
+  if (showScientific.value) return
   activeId.value = id
   hoverId.value = null
   hoverAnchor.value = null
@@ -204,47 +277,148 @@ const handleGrow = async (payload: { type: 'text' | 'image'; data: string }) => 
   }
 }
 
-const handlePlant = () => {
+const handlePlant = async () => {
   if (!draftLily.value) return
+
+  // If no traveling lily exists (e.g., ready phase watcher didn't run), create at center
+  if (!travelingLily.value) {
+    travelingLily.value = {
+      ...draftLily.value,
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      scale: 3.25,
+    }
+  }
 
   hoverId.value = null
   hoverAnchor.value = null
+  activeId.value = null
+  travelVisible.value = true
 
-  // Close the creator immediately; planting continues via the travel animation.
+  // Close modal
   showCreator.value = false
 
+  // Compute PCA layout
   const nextLilies = [...lilies.value, draftLily.value]
-  const layout = computePcaLayout(nextLilies.map((lily) => lily.embedding))
+  const vectorsForPca = buildVectorsForPca(nextLilies, {
+    enabled: scientificMode && alignmentEnabled.value,
+    alpha: alignmentAlpha.value,
+  })
+  const layout = computePcaLayout(vectorsForPca)
   const target = layout[layout.length - 1] ?? { x: 0, y: 0 }
 
+  // Move existing lilies to new positions (CSS will animate)
   lilies.value = lilies.value.map((lily, index) => ({
     ...lily,
     x: layout[index]?.x ?? 0,
     y: layout[index]?.y ?? 0,
   }))
 
-  travelingLily.value = {
-    ...draftLily.value,
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-  }
-
-  requestAnimationFrame(() => {
-    if (!travelingLily.value) return
+  // Wait for modal to unmount and DOM to settle
+  await nextTick()
+  
+  // Start the travel animation
+  travelArmed.value = true
+  
+  // Wait for armed class to be applied
+  await nextTick()
+  
+  // Move to target
+  if (travelingLily.value) {
     travelingLily.value = {
       ...travelingLily.value,
       x: window.innerWidth / 2 + target.x,
       y: window.innerHeight / 2 + target.y,
+      scale: plantedActiveScale,
     }
-  })
+  }
 
+  // After animation completes, add to pond
   window.setTimeout(() => {
-    lilies.value = [...lilies.value, { ...draftLily.value!, x: target.x, y: target.y }]
-    activeId.value = draftLily.value!.id
+    const planted = { ...draftLily.value!, x: target.x, y: target.y }
+    lilies.value = [...lilies.value, planted]
+    activeId.value = planted.id
     draftLily.value = null
-    travelingLily.value = null
+
+    requestAnimationFrame(() => {
+      travelingLily.value = null
+      travelArmed.value = false
+      travelVisible.value = false
+    })
   }, 1200)
 }
+
+watch(
+  () => [alignmentEnabled.value, alignmentAlpha.value],
+  () => {
+    if (!scientificMode) return
+    if (travelingLily.value) return
+    if (lilies.value.length < 2) return
+
+    const layout = computePcaLayout(
+      buildVectorsForPca(lilies.value, {
+        enabled: alignmentEnabled.value,
+        alpha: alignmentAlpha.value,
+      })
+    )
+
+    lilies.value = lilies.value.map((lily, index) => ({
+      ...lily,
+      x: layout[index]?.x ?? 0,
+      y: layout[index]?.y ?? 0,
+    }))
+  }
+)
+
+watch(
+  () => [showCreator.value, draftLily.value, creatorPhase.value] as const,
+  async ([isOpen, draft, phase]) => {
+    if (!isOpen) return
+    if (!draft) return
+    if (phase !== 'ready') return
+    if (travelArmed.value) return
+
+    await nextTick()
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+
+    // Find the big-preview in the modal (now contains the lily SVG).
+    const anchor = document.querySelector('.lily-panel .big-preview') as HTMLElement | null
+    const rect = anchor?.getBoundingClientRect() ?? null
+    if (!rect || rect.width < 10 || rect.height < 10) return
+
+    const baseSize = 104
+    const startScale = Math.min(4.8, Math.max(2.2, rect.width / baseSize))
+
+    travelingLily.value = {
+      ...draft,
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+      scale: startScale,
+    }
+    travelArmed.value = false
+    travelVisible.value = false
+
+    // Fade in the preview lily as soon as phase 3 (ready) starts.
+    await nextTick()
+    requestAnimationFrame(() => {
+      travelVisible.value = true
+    })
+  }
+)
+
+watch(
+  () => showCreator.value,
+  (isOpen, wasOpen) => {
+    if (isOpen) return
+    // Only clear traveling lily when closing normally, not when planting
+    // (planting sets showCreator to false but expects travel to continue)
+    if (wasOpen && !travelingLily.value) {
+      travelingLily.value = null
+      travelArmed.value = false
+      travelVisible.value = false
+    }
+  }
+)
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 

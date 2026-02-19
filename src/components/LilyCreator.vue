@@ -62,40 +62,35 @@
             </div>
 
             <div v-else-if="preview && phase === 'ready'" key="lily" class="lily-panel" aria-hidden="true">
-              <div class="big-preview">
-                <svg viewBox="-14 -14 148 148">
-                  <g class="preview-pad">
-                    <path
-                      class="pad-outline"
-                      :d="previewPad.fillPath"
-                      transform="translate(60 60) scale(1.04) translate(-60 -60)"
-                      fill-rule="evenodd"
-                      :fill="previewPad.edge"
-                    />
-                    <path
-                      class="pad-fill"
-                      :d="previewPad.fillPath"
-                      fill-rule="evenodd"
-                      :fill="previewPad.fill"
-                    />
-                    <path
-                      class="pad-slit"
-                      :d="previewPad.slitPath"
-                      :stroke="previewPad.edge"
-                      fill="none"
-                      vector-effect="non-scaling-stroke"
-                    />
-                  </g>
-                  <g class="preview-lily">
-                    <path
-                      :d="preview.shapePath"
-                      :fill="preview.color"
-                      :stroke="preview.outline"
-                      stroke-width="3"
-                    />
-                    <circle cx="60" cy="54" r="4.2" fill="rgba(255, 244, 168, 0.95)" />
-                    <circle cx="52" cy="66" r="3.6" fill="rgba(255, 244, 168, 0.88)" />
-                    <circle cx="68" cy="66" r="3.4" fill="rgba(255, 244, 168, 0.82)" />
+              <div class="big-preview" v-if="preview">
+                <svg viewBox="0 0 120 120" class="preview-pad">
+                  <path
+                    class="pad-outline"
+                    :d="padPaths.fillPath"
+                    transform="translate(60 60) scale(1.04) translate(-60 -60)"
+                    fill-rule="evenodd"
+                    :fill="padColors.edge"
+                  />
+                  <path
+                    class="pad-fill"
+                    :d="padPaths.fillPath"
+                    fill-rule="evenodd"
+                    :fill="padColors.fill"
+                  />
+                  <path
+                    class="pad-slit"
+                    :d="padPaths.slitPath"
+                    :stroke="padColors.edge"
+                    fill="none"
+                    vector-effect="non-scaling-stroke"
+                  />
+                </svg>
+                <svg viewBox="0 0 120 120" class="preview-lily">
+                  <path :d="preview.shapePath" :fill="preview.color" :stroke="preview.outline" stroke-width="3" />
+                  <g class="lily-stamen">
+                    <circle cx="60" cy="54" r="3.3" fill="rgba(255, 244, 168, 0.95)" />
+                    <circle cx="53" cy="64" r="2.9" fill="rgba(255, 244, 168, 0.88)" />
+                    <circle cx="67" cy="65" r="2.8" fill="rgba(255, 244, 168, 0.82)" />
                   </g>
                 </svg>
               </div>
@@ -120,8 +115,8 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { createLilyPadPaths } from '../utils/lilyPad'
 import IconButton from './IconButton.vue'
+import { createLilyPadPaths } from '../utils/lilyPad'
 
 type LilyPreview = {
   label: string
@@ -142,6 +137,7 @@ const emit = defineEmits<{
   (event: 'close'): void
   (event: 'grow', payload: { type: 'text' | 'image'; data: string }): void
   (event: 'plant'): void
+  (event: 'phase', phase: Phase): void
 }>()
 
 const mode = ref<'text' | 'image'>('text')
@@ -149,8 +145,8 @@ const textInput = ref('')
 const imageData = ref('')
 const imagePreview = ref('')
 
- type Phase = 'idle' | 'embedding' | 'ready'
- const phase = ref<Phase>('idle')
+type Phase = 'idle' | 'embedding' | 'ready'
+const phase = ref<Phase>('idle')
 
 const showStatus = ref(false)
 
@@ -168,11 +164,43 @@ const canGrow = computed(() => {
   return imageData.value.length > 0
 })
 
+const padPaths = computed(() => {
+  if (!props.preview) return { fillPath: '', slitPath: '' }
+  // Deterministic based on preview to match the lily
+  const seed = props.preview.label.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+  const random = mulberry32(seed)
+  const slitAngle = random() * Math.PI * 2
+  const slitWidth = 0.45 + random() * 0.35
+  return createLilyPadPaths({ slitAngle, slitWidth })
+})
+
+const padColors = computed(() => {
+  if (!props.preview) return { fill: '#2d5a3d', edge: '#1a3d28' }
+  const seed = props.preview.label.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+  const random = mulberry32(seed)
+  const hue = 102 + random() * 10
+  const saturation = 36 + random() * 8
+  const lightness = 30 + random() * 10
+  const fill = `hsl(${hue.toFixed(1)} ${saturation.toFixed(1)}% ${lightness.toFixed(1)}%)`
+  const edge = `hsl(${hue.toFixed(1)} ${(saturation + 6).toFixed(1)}% ${Math.max(18, lightness - 10).toFixed(1)}%)`
+  return { fill, edge }
+})
+
+function mulberry32(seed: number) {
+  return function () {
+    let t = (seed += 0x6d2b79f5)
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
 const sequenceStart = ref<number | null>(null)
 
 const grow = () => {
   if (phase.value !== 'idle') return
   phase.value = 'embedding'
+  emit('phase', phase.value)
   sequenceStart.value = Date.now()
   showStatus.value = false
   streamValues.value = buildStreamValues()
@@ -186,6 +214,14 @@ const grow = () => {
     emit('grow', { type: 'image', data: imageData.value })
   }
 }
+
+watch(
+  () => phase.value,
+  (next) => {
+    emit('phase', next)
+  },
+  { immediate: true }
+)
 
 const handleImage = (event: Event) => {
   const target = event.target as HTMLInputElement
@@ -262,15 +298,4 @@ watch(
   }
 )
 
-const previewPad = (() => {
-  const slitAngle = -0.95
-  const slitWidth = 0.82
-  const { fillPath, slitPath } = createLilyPadPaths({ r: 60, slitAngle, slitWidth })
-  return {
-    fill: 'hsl(108 32% 34%)',
-    edge: 'hsl(108 34% 22%)',
-    fillPath,
-    slitPath,
-  }
-})()
 </script>

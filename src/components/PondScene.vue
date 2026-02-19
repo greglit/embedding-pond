@@ -101,6 +101,7 @@ type Pad = {
   driftRot: number
   driftDuration: number
   driftDelay: number
+  appearDelay: number
 }
 
 const props = defineProps<{
@@ -209,6 +210,7 @@ const padStyle = (pad: Pad) => ({
   '--drift-rot': `${pad.driftRot.toFixed(2)}deg`,
   '--drift-duration': `${pad.driftDuration.toFixed(2)}s`,
   '--drift-delay': `${pad.driftDelay.toFixed(2)}s`,
+  '--pad-appear-delay': `${pad.appearDelay.toFixed(2)}s`,
 })
 
 const createPadsNearLily = (lily: Lily) => {
@@ -237,6 +239,7 @@ const createPad = (id: string, x: number, y: number, random: () => number): Pad 
   const driftRot = (random() * 2 - 1) * 5.4
   const driftDuration = 9 + random() * 14
   const driftDelay = -random() * driftDuration
+  const appearDelay = random() * 0.22
   const slitAngle = random() * Math.PI * 2
   const slitWidth = 0.45 + random() * 0.35
   const { fillPath, slitPath } = createPadPaths(slitAngle, slitWidth)
@@ -255,6 +258,7 @@ const createPad = (id: string, x: number, y: number, random: () => number): Pad 
     driftRot,
     driftDuration,
     driftDelay,
+    appearDelay,
   }
 }
 
