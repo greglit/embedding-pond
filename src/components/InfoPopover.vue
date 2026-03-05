@@ -42,6 +42,12 @@
         <p>
           This is the key idea behind “multimodal” embeddings: the same type of numbers is used for different types of input.
         </p>
+        <img
+          class="info-popover__gif"
+          src="/blogpost/clip_embeddings.gif"
+          alt="CLIP encoding of text and images into shared embeddings"
+          loading="lazy"
+        />
       </section>
 
       <section>
@@ -111,3 +117,13 @@ const emit = defineEmits<{
   (event: 'close'): void
 }>()
 </script>
+
+<style scoped>
+.info-popover__gif {
+  width: 100%;
+  max-width: 560px;
+  display: block;
+  margin: 12px auto 0;
+  border-radius: 10px;
+}
+</style>
