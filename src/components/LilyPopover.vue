@@ -1,5 +1,5 @@
 <template>
-  <div class="lily-popover" :class="{ 'is-hover': mode === 'hover' }" :style="popoverStyle">
+  <div ref="popoverRef" class="lily-popover" :class="{ 'is-hover': mode === 'hover' }" :style="popoverStyle">
     <header>
       <div>
         <h3>Waterlily based on {{ lily.sourceType }}</h3>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import IconButton from './IconButton.vue'
 
 type Lily = {
@@ -40,6 +40,24 @@ const props = defineProps<{
   anchor?: { x: number; y: number } | null
   mode?: 'click' | 'hover'
 }>()
+
+const popoverRef = ref<HTMLElement | null>(null)
+
+const handleClickOutside = (event: MouseEvent) => {
+  const target = event.target as Element
+  const isOnLily = target.closest('.lily')
+  if (!isOnLily && popoverRef.value && !popoverRef.value.contains(target)) {
+    emit('close')
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 
 const mode = computed(() => props.mode ?? 'click')
 
