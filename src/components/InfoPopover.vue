@@ -6,7 +6,7 @@
     </header>
 
     <div class="info-popover__body">
-      <section>
+      <section class="intro">
         <p>
           This interactive demo was built in the ScaDS.AI Leipzig Living Lab.
           It shows how a model can turn text and images into a common numerical representation (an embedding).
@@ -17,32 +17,26 @@
       <section>
         <h4>Embeddings</h4>
         <p>
-          An embedding is a long list of numbers (a vector). It is used as a compact representation of an input, for example a sentence or
-          an image.
+          Imagine meaning as a map: each input — a sentence, a paragraph, or an image — becomes a single point on a gigantic coordinate
+          system. An embedding is simply the numeric address of that point: a long list of numbers that captures the input's essence.
         </p>
         <p>
-          A useful embedding has this property: inputs with similar meaning get vectors that are close to each other.
+          Because similar things tend to live near one another on this map, the embedding for "apple" will usually be much closer to
+          "banana" than to "house". Proximity in the embedding space is a quick and reliable way to measure semantic similarity.
         </p>
         <p>
-          Many AI systems need numbers so they can compare, search, or group data.
-          Embeddings are commonly used for semantic search ("find something like this") and for clustering ("group similar things").
-          In LLM pipelines, they are often used for retrieval: selecting relevant information to include in a prompt.
+          Embeddings power many common tasks: semantic search ("find items like this"), clustering (grouping similar examples),
+          recommendation, and reranking. They are not just a retrieval trick — they're a core representation that modern models use to
+          reason about content.
+        </p>
+        <p>
+          Inside an LLM pipeline the flow typically looks like: tokenize the input, convert tokens into embeddings, and feed those
+          embeddings into the transformer layers. In short: embeddings are the numeric language the model speaks — without them the
+          rest of the system wouldn't have anything compact and comparable to work with.
         </p>
       </section>
 
-      <section>
-        <h4>Multimodal embeddings (CLIP)</h4>
-        <p>
-          CLIP is trained to map text and images into the same high-dimensional vector space.
-          This makes it possible to compare a text embedding with an image embedding.
-        </p>
-        <p>
-          In simple terms: if an image and a sentence describe similar content, their vectors should be close together.
-        </p>
-        <p>
-          This is the key idea behind “multimodal” embeddings: the same type of numbers is used for different types of input.
-        </p>
-      </section>
+      
 
       <section>
         <h4>Rendering the waterlilies</h4>
@@ -58,15 +52,48 @@
       <section>
         <h4>Placing waterlilies on the pond (PCA)</h4>
         <p>
-          Embeddings have many dimensions (often hundreds). The pond is 2D, so we need a way to place each embedding on a flat surface.
+          Embeddings live in a space with hundreds of dimensions — far more than we can draw. To show them on a flat pond, we need a smart
+          way to compress that space down to two coordinates without losing the overall structure.
         </p>
         <p>
-          PCA (principal component analysis) reduces the high-dimensional vectors to two numbers (x and y).
-          The result is an approximate layout where similar embeddings often appear closer together.
+          PCA (principal component analysis) does exactly that. It finds the directions where the data varies the most and projects every
+          embedding onto those axes. The result is a 2D sketch of the original space: not perfect, but often good enough to preserve
+          neighborhoods, so similar inputs still land near each other.
         </p>
       </section>
 
       <section>
+        <h4>The Modality Gap</h4>
+        <p>
+          The 2D picture you see here is the result of the PCA projection described above. Once we lay the embeddings out on this flat
+          map, a characteristic pattern often appears: text points and image points drift into different regions.
+        </p>
+        <p>
+          This spatial separation is called the modality gap. It means that even when a sentence and an image describe the same concept,
+          their vectors may not end up as close as we would hope, which weakens cross‑modal search and comparison.
+        </p>
+        <p>
+          A common way to visualize this is a stretched or truncated shape, with text on one side and images on the other:
+        </p>
+        <figure style="margin:10px 0 0;">
+          <img src="/blogpost/modality_gap.png" alt="Modality gap visualization" style="max-width:100%; border-radius:8px;" />
+          <figcaption style="font-size:0.85rem; color:rgba(29,41,51,0.66); margin-top:6px;">
+            Source: https://itstedpark.medium.com/building-an-intelligent-pdf-chatbot-with-gpt-4-langchain-and-gradio-f6aa1c65d394
+          </figcaption>
+        </figure>
+      </section>
+      <section class="tech-sep">
+        <h4>Multimodal embeddings — CLIP</h4>
+        <p>
+          OpenAI's CLIP model teaches images and text to meet in the middle. It learns a shared vector space by pulling matching captions
+          and pictures together and pushing mismatches apart. The payoff is simple: a sentence and an image that describe the same thing
+          end up nearby, which makes cross‑modal comparison feel natural.
+        </p>
+        <p>
+          Want the deep dive? Here is OpenAI's writeup on CLIP:
+          <a href="https://openai.com/research/clip" target="_blank" rel="noreferrer">openai.com/research/clip</a>
+        </p>
+
         <h4>Tech</h4>
         <p>
           Everything runs in your browser. There is no server-side computation and your inputs are not sent anywhere by this app.
@@ -98,6 +125,10 @@
         <p>
           The app does not upload your text or images.
           If you choose an image file, the browser creates a local object URL so the image can be displayed and processed on your device.
+        </p>
+        <p>
+          The embeddings that are produced are only kept in memory during the app's runtime — represented as JSON-like structures —
+          and are not permanently stored or sent to any server.
         </p>
       </section>
     </div>

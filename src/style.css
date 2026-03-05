@@ -599,7 +599,7 @@ button {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: min(720px, calc(100vw - 36px));
+  width: min(870px, calc(100vw - 36px));
   max-height: calc(100vh - 80px);
   overflow: hidden;
   background: rgba(253, 247, 246, 0.97);
@@ -637,6 +637,17 @@ button {
 }
 
 .info-popover section + section {
+  padding-top: 12px;
+  margin-top: 14px;
+}
+
+/* keep a separator after the intro and before the tech section only */
+.info-popover .intro + section {
+  border-top: 1px solid rgba(10, 45, 65, 0.12);
+  padding-top: 12px;
+  margin-top: 14px;
+}
+.info-popover section.tech-sep {
   border-top: 1px solid rgba(10, 45, 65, 0.12);
   padding-top: 12px;
   margin-top: 14px;
