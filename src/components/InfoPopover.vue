@@ -36,8 +36,6 @@
         </p>
       </section>
 
-      
-
       <section>
         <h4>Rendering the waterlilies</h4>
         <p>
@@ -89,6 +87,12 @@
           and pictures together and pushing mismatches apart. The payoff is simple: a sentence and an image that describe the same thing
           end up nearby, which makes cross‑modal comparison feel natural.
         </p>
+        <img
+          class="info-popover__gif"
+          src="/blogpost/clip_embeddings.gif"
+          alt="CLIP encoding of text and images into shared embeddings"
+          loading="lazy"
+        />
         <p>
           Want the deep dive? Here is OpenAI's writeup on CLIP:
           <a href="https://openai.com/research/clip" target="_blank" rel="noreferrer">openai.com/research/clip</a>
@@ -142,3 +146,13 @@ const emit = defineEmits<{
   (event: 'close'): void
 }>()
 </script>
+
+<style scoped>
+.info-popover__gif {
+  width: 100%;
+  max-width: 560px;
+  display: block;
+  margin: 12px auto 0;
+  border-radius: 10px;
+}
+</style>
