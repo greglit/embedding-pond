@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.2.0",
     "@huggingface/transformers": "^3.8.1",
     "ml-pca": "^4.1.1",
     "three": "^0.167.1",

@@ -445,7 +445,7 @@ button {
   right: 18px;
   bottom: 18px;
   z-index: 11;
-  padding: 10px 14px;
+  padding: 10px 12px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.14);
   color: rgba(253, 247, 246, 0.92);
@@ -457,6 +457,9 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  width: 44px;
+  overflow: hidden;
+  transition: width 220ms ease, background 160ms ease;
 }
 
 .science-button__icon {
@@ -472,8 +475,36 @@ button {
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
 }
 
+.science-button__icon i {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
 .science-button:hover {
   background: rgba(255, 255, 255, 0.18);
+  width: 120px;
+}
+
+.science-button.expanded {
+  width: 120px;
+}
+
+.science-button__label {
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.science-button:hover .science-button__label,
+.science-button.expanded .science-button__label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.science-button__icon i {
+  font-size: 0.9rem;
+  line-height: 1;
 }
 
 .scientific-popover {
@@ -526,6 +557,23 @@ button {
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.science-reset {
+  align-self: flex-start;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.science-reset:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
 }
 
 .science-toggle {
@@ -641,16 +689,10 @@ button {
   margin-top: 14px;
 }
 
-/* keep a separator after the intro and before the tech section only */
-.info-popover .intro + section {
+.info-popover section.top-separator {
   border-top: 1px solid rgba(10, 45, 65, 0.12);
-  padding-top: 12px;
-  margin-top: 14px;
-}
-.info-popover section.tech-sep {
-  border-top: 1px solid rgba(10, 45, 65, 0.12);
-  padding-top: 12px;
-  margin-top: 14px;
+  padding-top: 25px;
+  margin-top: 50px;
 }
 
 .info-popover p {
@@ -776,14 +818,22 @@ button {
   place-items: center;
   width: 40px;
   height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  flex: 0 0 40px;
   border-radius: 999px;
   background: rgba(10, 45, 65, 0.08);
   color: rgba(10, 45, 65, 0.9);
   transition: background 160ms ease, transform 160ms ease;
+  padding: 0;
+  line-height: 1;
+  box-sizing: border-box;
 }
 
 .icon-button svg {
   display: block;
+  width: 20px;
+  height: 20px;
 }
 
 .icon-button:hover {

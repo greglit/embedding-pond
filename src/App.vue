@@ -25,12 +25,15 @@
     <button
       v-if="scientificMode"
       class="science-button"
+      :class="{ expanded: showScientific }"
       type="button"
       @click="toggleScientific"
       :aria-expanded="showScientific"
     >
-      <span class="science-button__icon" aria-hidden="true">🧪</span>
-      <span>Science</span>
+      <span class="science-button__icon" aria-hidden="true">
+        <i class="fa-solid fa-flask"></i>
+      </span>
+      <span class="science-button__label">Science</span>
     </button>
 
     <Transition name="overlay-fade">
@@ -72,6 +75,7 @@
       @close="showScientific = false"
       @update:enabled="alignmentEnabled = $event"
       @update:alpha="alignmentAlpha = $event"
+      @reset="resetScientificDefaults"
     />
 
     <div
@@ -213,6 +217,11 @@ const toggleScientific = () => {
     showCreator.value = false
     showInfo.value = false
   }
+}
+
+const resetScientificDefaults = () => {
+  alignmentEnabled.value = false
+  alignmentAlpha.value = 0.75
 }
 
 const handleSelect = (id: string) => {

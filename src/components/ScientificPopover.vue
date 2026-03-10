@@ -3,7 +3,7 @@
     <header>
       <div>
         <h3>Scientific Tools</h3>
-        <p>Tools to investigate the Modality Gap Problem.</p>
+        <p>Tools to investigate the Modality Gap Problem. For more info click "Info"-Button in the bottom left corner.</p>
       </div>
       <IconButton label="Close" @click="emit('close')" />
     </header>
@@ -29,6 +29,10 @@
           @input="onAlphaInput"
         />
       </div>
+
+      <button class="science-reset" type="button" @click="emit('reset')">
+        Restore defaults
+      </button>
     </section>
   </div>
 </template>
@@ -45,6 +49,7 @@ const emit = defineEmits<{
   (event: 'close'): void
   (event: 'update:enabled', value: boolean): void
   (event: 'update:alpha', value: number): void
+  (event: 'reset'): void
 }>()
 
 const onToggle = (event: Event) => {
