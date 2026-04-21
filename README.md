@@ -2,6 +2,8 @@
 
 A small, browser-only webapp that visualizes multimodal embeddings (text + image) as waterlilies floating on a pond.
 
+This interactive demo was built in the ScaDS.AI Living Lab in Leipzig. It shows how a model can turn text and images into a common numerical representation (an embedding). These embeddings can then be compared, even if the inputs are different types of data. 
+
 For implementation/UX context, start with `OVERVIEW.md`.
 
 ## What It Does
