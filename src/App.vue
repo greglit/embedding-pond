@@ -1,5 +1,5 @@
 <template>
-  <main class="pond-app" :class="{ 'is-planting': Boolean(travelingLily) }">
+  <main class="pond-app" :class="{ 'is-planting': Boolean(travelingLily), 'has-lilies': lilies.length > 0 }">
     <div class="pond-title" :class="{ compact: titleCompact }">
       <h1>The Embedding Pond</h1>
       <h2>Grow beautiful waterlilies and learn how AI makes sense of your data.</h2>
@@ -224,6 +224,7 @@ const resetScientificDefaults = () => {
   alignmentAlpha.value = 0.75
 }
 
+
 const handleSelect = (id: string) => {
   if (showScientific.value) return
   activeId.value = id
@@ -428,8 +429,6 @@ watch(
     }
   }
 )
-
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 
 const fract = (value: number) => value - Math.floor(value)
 

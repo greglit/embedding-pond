@@ -84,7 +84,6 @@ type Lily = {
   shadowY?: number
   x?: number
   y?: number
-  justPlanted?: boolean
 }
 
 type Pad = {
@@ -183,7 +182,6 @@ const lilyStyle = (lily: Lily) => {
   const shadowBlurHover = shadowBlur + 10
   const shadowAlphaHover = Math.min(0.36, shadowAlpha + 0.06)
   const shadowYHover = shadowY + 4
-  const isJustPlanted = lily.justPlanted ?? false
   return {
     '--x': `${x}px`,
     '--y': `${y}px`,
@@ -198,7 +196,7 @@ const lilyStyle = (lily: Lily) => {
     '--shadow-blur-hover': `${shadowBlurHover}px`,
     '--shadow-alpha-hover': `${shadowAlphaHover}`,
     '--shadow-y-hover': `${shadowYHover}px`,
-    '--scale-duration': isJustPlanted ? '0.4s' : '0s',
+    '--scale-duration': '0s',
     width: `${size}px`,
     height: `${size}px`,
   }

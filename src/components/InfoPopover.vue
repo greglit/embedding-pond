@@ -47,7 +47,7 @@
         <h5>Multimodal embeddings — CLIP</h5>
         <p>
           OpenAI's <strong>CLIP</strong> model was trained to bring <strong>images and text</strong> into the same universe of meaning. It learns a
-          so called <strong>shared vector space</strong> by pulling matching captions and pictures together and pushing mismatches apart. The payoff is
+          so-called <strong>shared vector space</strong> by pulling matching captions and pictures together and pushing mismatches apart. The payoff is
           simple: a sentence and an image that describe the same thing end up <strong>nearby</strong>, which makes it possible to compare embeddings from different
           types of data.
         </p>
@@ -58,7 +58,7 @@
           loading="lazy"
         />
         <p style="margin-top: 20px;">
-          Want the deep dive? Here is OpenAI's writeup on CLIP:
+          Want the deep dive? Here is OpenAI's write-up on CLIP:
           <a href="https://openai.com/research/clip" target="_blank" rel="noreferrer">openai.com/research/clip</a>
         </p>
       </section>
@@ -85,7 +85,7 @@
       </section>
 
       <section class="top-separator">
-        <h3>Planting the waterlilies — From Highdimensional to 2D Space</h3>
+        <h3>Planting the waterlilies — From High-dimensional to 2D Space</h3>
         <p>
           Embeddings live in a space with <strong>hundreds of dimensions</strong> — far more than we can imagine in 2D or 3D space. To show them on a flat pond,
           we need a smart way to <strong>compress</strong> that space down to <strong>two coordinates</strong> without losing the overall
@@ -107,7 +107,7 @@
         <p>
           While it's still possible to compute meaningful similarities, 
           the gap leads to a misleading visual impression that is also present in our waterlily pond. We tried some approaches to mitigate that, 
-          which can be explored by clicking on the <strong>Science</strong> button   in the bottom right corner. Feel free to experiment with the settings and see how they affect the layout!
+          which can be explored by clicking on the <strong>Science</strong> button in the bottom-right corner. Feel free to experiment with the settings and see how they affect the layout!
         </p>
         <figure style="margin:10px 0 0;">
           <img src="/blogpost/modality_gap.jpeg" alt="Modality gap visualization" style="max-width:100%; border-radius:8px;" />
@@ -116,7 +116,7 @@
           </figcaption>
         </figure>
         <p>
-          In this graphic the projection is done with <strong>UMAP</strong> rather than PCA. It is similar in spirit, but tends to make the
+          In this graphic, the projection is done with <strong>UMAP</strong> rather than PCA. It is similar in spirit, but tends to make the
           modality gap even clearer. Learn more
           <a href="https://biostatsquid.com/pca-umap-tsne-comparison/" target="_blank" rel="noreferrer">here</a>.
         </p>
@@ -133,7 +133,7 @@
           <a href="https://openai.com/index/clip/" target="_blank" rel="noreferrer">CLIP</a> model locally.
         </p>
         <p>
-          Transformer.js uses browser features like <strong>WebAssembly (WASM)</strong> and <strong>WebGPU/WebGL</strong> (depending on the
+          Transformers.js uses browser features like <strong>WebAssembly (WASM)</strong> and <strong>WebGPU/WebGL</strong> (depending on the
           device) to run the model. Performance depends on your browser and hardware.
         </p>
         <h5>What happens when you press “Grow”</h5>

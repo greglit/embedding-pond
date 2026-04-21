@@ -3,7 +3,7 @@
     <header>
       <div>
         <h3>Scientific Tools</h3>
-        <p>Tools to investigate the Modality Gap Problem. For more info click "Info"-Button in the bottom left corner.</p>
+        <p>Tools to investigate the modality gap. For more info, click the Info button in the bottom-left corner.</p>
       </div>
       <IconButton label="Close" @click="emit('close')" />
     </header>

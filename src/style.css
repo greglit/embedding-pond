@@ -125,6 +125,7 @@ button {
 
 
 
+
 @keyframes drift {
   0% {
     transform: translateY(0) rotate(0deg);
@@ -406,6 +407,7 @@ button {
   z-index: 10;
 }
 
+
 .new-lily:hover {
   transform: translateX(-50%) translateY(-4px) scale(1.03);
   box-shadow: 0 18px 44px rgba(3, 19, 29, 0.38);
@@ -439,6 +441,7 @@ button {
   align-items: center;
   gap: 10px;
 }
+
 
 .science-button {
   position: absolute;
@@ -1237,7 +1240,83 @@ button {
 
   .lily-popover {
     right: 16px;
+    top: 16px;
+    bottom: auto;
+  }
+
+  .science-button {
+    right: 16px;
     bottom: 16px;
+  }
+
+  .pond-title {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    max-width: 100%;
+    text-align: left;
+    padding: 14px 18px 0;
+    z-index: 9;
+  }
+
+  .pond-title:not(.compact) {
+    top: auto;
+    transform: none;
+    max-width: 100%;
+  }
+
+  .pond-title h1 {
+    font-size: clamp(2.1rem, 7vw, 3rem);
+  }
+
+  .pond-title h2 {
+    font-size: clamp(1.05rem, 3.6vw, 1.45rem);
+    margin-top: 6px;
+  }
+
+  .pond-title.compact h1 {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+  }
+
+  .pond-title.compact h2 {
+    font-size: clamp(0.95rem, 3.2vw, 1.2rem);
+  }
+
+  .new-lily {
+    top: auto;
+    bottom: auto;
+    margin: 16px 0 0;
+    position: relative;
+    left: 18px;
+    transform: none;
+  }
+
+  .pond-app.has-lilies .new-lily {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 16px;
+    margin: 0;
+  }
+
+  .new-lily:hover,
+  .new-lily:active {
+    transform: none;
+    box-shadow: 0 10px 30px rgba(3, 19, 29, 0.35);
+  }
+
+  .info-button {
+    left: 16px;
+    bottom: 16px;
+    padding: 0;
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+  }
+
+  .info-button span:not(.info-button__icon) {
+    display: none;
   }
 
   .science-button {
@@ -1247,8 +1326,8 @@ button {
 
   .scientific-popover {
     right: 16px;
-    top: auto;
-    bottom: 16px;
+    top: 16px;
+    bottom: auto;
   }
 
   .modal {
@@ -1269,5 +1348,14 @@ button {
 
   .image-input .preview img {
     max-height: 240px;
+  }
+
+  .number-stream__content {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px 8px;
+  }
+
+  .number-stream__content span {
+    font-size: 0.78rem;
   }
 }
