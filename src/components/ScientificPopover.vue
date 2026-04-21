@@ -1,22 +1,22 @@
 <template>
-  <div class="scientific-popover" role="dialog" aria-label="Scientific controls">
+  <div class="scientific-popover" role="dialog" :aria-label="t('science.ariaLabel')">
     <header>
       <div>
-        <h3>Scientific Tools</h3>
-        <p>Tools to investigate the modality gap. For more info, click the Info button in the bottom-left corner.</p>
+        <h3>{{ t('science.title') }}</h3>
+        <p>{{ t('science.description') }}</p>
       </div>
-      <IconButton label="Close" @click="emit('close')" />
+      <IconButton :label="t('common.close')" @click="emit('close')" />
     </header>
 
     <section class="popover-body">
       <label class="science-toggle">
         <input type="checkbox" :checked="props.enabled" @change="onToggle" />
-        <span>Centroid alignment (text -&gt; image)</span>
+        <span>{{ t('science.centroidAlignment') }}</span>
       </label>
 
       <div class="science-slider" :class="{ dim: !props.enabled }">
         <div class="science-slider__row">
-          <span>Strength</span>
+          <span>{{ t('science.strength') }}</span>
           <span class="science-slider__value">{{ props.alpha.toFixed(2) }}</span>
         </div>
         <input
@@ -31,14 +31,17 @@
       </div>
 
       <button class="science-reset" type="button" @click="emit('reset')">
-        Restore defaults
+        {{ t('science.restoreDefaults') }}
       </button>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import IconButton from './IconButton.vue'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   enabled: boolean

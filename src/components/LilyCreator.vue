@@ -5,47 +5,50 @@
         <div class="header-content">
           <Transition name="fade" mode="out-in">
             <div v-if="phase === 'idle'" key="idle">
-              <h2>Grow a waterlily from your data</h2>
+              <h2>{{ t('creator.idle.title') }}</h2>
               <p class="subhead">
-                We'll extract the <strong>"condensed meaning"</strong> from your data in form of a long list of numbers. This is called an
-                <strong>embedding</strong>. From those numbers, we'll grow a beautiful, unique waterlily.
+                {{ t('creator.idle.subheadStart') }} <strong>{{ t('creator.idle.condensedMeaning') }}</strong>
+                {{ t('creator.idle.subheadMiddle') }}
+                <strong>{{ t('creator.idle.embedding') }}</strong>. {{ t('creator.idle.subheadEnd') }}
               </p>
             </div>
 
             <div v-else-if="phase === 'ready'" key="ready">
-              <h2>Look! A beautiful waterlily!</h2>
+              <h2>{{ t('creator.ready.title') }}</h2>
               <p class="subhead">
-                This waterlily is shaped by the <strong>embedding</strong> values and carries the <strong>"essence"</strong> of your data.
+                {{ t('creator.ready.subheadStart') }} <strong>{{ t('creator.idle.embedding') }}</strong>
+                {{ t('creator.ready.subheadMiddle') }} <strong>{{ t('creator.ready.essence') }}</strong>
+                {{ t('creator.ready.subheadEnd') }}
               </p>
             </div>
 
             <div v-else key="embedding">
-              <h2>Generating embeddings...</h2>
-              <p class="subhead">These numbers capture the <strong>"condensed meaning"</strong> of your input.</p>
+              <h2>{{ t('creator.embedding.title') }}</h2>
+              <p class="subhead">{{ t('creator.embedding.subheadStart') }} <strong>{{ t('creator.idle.condensedMeaning') }}</strong> {{ t('creator.embedding.subheadEnd') }}</p>
             </div>
           </Transition>
         </div>
-        <IconButton label="Close" @click="emit('close')" />
+        <IconButton :label="t('common.close')" @click="emit('close')" />
       </header>
 
       <div class="modal-body">
         <template v-if="phase === 'idle'">
-          <p class="helper">To begin, choose <strong>text</strong> or <strong>image</strong>.</p>
+          <p class="helper">{{ t('creator.helperStart') }} <strong>{{ t('creator.text') }}</strong> {{ t('creator.helperOr') }} <strong>{{ t('creator.image') }}</strong>.</p>
           <div class="input-toggle">
-            <button :class="{ active: mode === 'text' }" @click="mode = 'text'" type="button">Text</button>
-            <button :class="{ active: mode === 'image' }" @click="mode = 'image'" type="button">Image</button>
+            <button :class="{ active: mode === 'text' }" @click="mode = 'text'" type="button">{{ t('creator.text') }}</button>
+            <button :class="{ active: mode === 'image' }" @click="mode = 'image'" type="button">{{ t('creator.image') }}</button>
           </div>
           <div class="input-area">
             <textarea
               v-if="mode === 'text'"
               v-model="textInput"
-              placeholder="Type a word, sentence, thought or memory..."
+              :placeholder="t('creator.placeholder')"
               rows="6"
             ></textarea>
             <div v-else class="image-input">
               <input type="file" accept="image/*" @change="handleImage" />
               <div v-if="imagePreview" class="preview">
-                <img :src="imagePreview" alt="Preview" />
+                <img :src="imagePreview" :alt="t('creator.imagePreviewAlt')" />
               </div>
             </div>
           </div>
@@ -115,8 +118,11 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import IconButton from './IconButton.vue'
 import { createLilyPadPaths } from '../utils/lilyPad'
+
+const { t } = useI18n()
 
 type LilyPreview = {
   label: string
@@ -233,9 +239,9 @@ const handleImage = (event: Event) => {
 }
 
 const primaryButtonLabel = computed(() => {
-  if (phase.value === 'ready') return 'Plant it! 🪷'
-  if (props.isLoading || phase.value !== 'idle') return 'Growing... 🪷'
-  return 'Grow it! 🪷'
+  if (phase.value === 'ready') return t('creator.plantButton')
+  if (props.isLoading || phase.value !== 'idle') return t('creator.growingButton')
+  return t('creator.growButton')
 })
 
 let readyTimer: number | null = null

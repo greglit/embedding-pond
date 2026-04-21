@@ -121,6 +121,42 @@ button {
   font-size: 1.1rem;
 }
 
+.language-switcher {
+  position: absolute;
+  top: 20px;
+  right: 18px;
+  z-index: 12;
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+}
+
+.language-switcher button {
+  min-width: 44px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: rgba(253, 247, 246, 0.92);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.language-switcher button:hover {
+  transform: translateY(-1px);
+}
+
+.language-switcher button.active {
+  background: rgba(255, 255, 255, 0.88);
+  color: rgba(10, 45, 65, 0.92);
+}
+
 
 
 
@@ -514,9 +550,9 @@ button {
 .scientific-popover {
   position: fixed;
   right: 24px;
-  top: 24px;
+  top: 92px;
   width: min(360px, 92vw);
-  max-height: calc(100vh - 48px);
+  max-height: calc(100vh - 116px);
   overflow: hidden;
   background: rgba(15, 37, 54, 0.92);
   color: #fef7f4;
@@ -714,6 +750,50 @@ button {
 .info-popover__body {
   overflow: auto;
   padding-right: 4px;
+}
+
+.markdown-body hr {
+  border: 0;
+  height: 1px;
+  background: rgba(10, 45, 65, 0.12);
+  margin: 26px 0;
+}
+
+.markdown-body h2 {
+  margin: 0 0 10px;
+  font-size: 1.45rem;
+}
+
+.markdown-body h3 {
+  margin: 18px 0 8px;
+  font-size: 1.2rem;
+  color: rgba(10, 45, 65, 0.92);
+}
+
+.markdown-body blockquote {
+  margin: 16px 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 10px;
+  background: rgba(248, 250, 252, 0.7);
+}
+
+.markdown-body blockquote h3 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  color: rgba(29, 41, 51, 0.7);
+}
+
+.markdown-body blockquote p {
+  margin: 0;
+}
+
+.markdown-body img {
+  width: 100%;
+  max-width: 560px;
+  display: block;
+  margin: 12px auto 0;
+  border-radius: 10px;
 }
 
 .info-popover .icon-button {
@@ -1055,9 +1135,9 @@ button {
 .lily-popover {
   position: fixed;
   right: 24px;
-  top: 24px;
+  top: 92px;
   width: min(400px, 92vw);
-  max-height: calc(100vh - 48px);
+  max-height: calc(100vh - 116px);
   overflow: hidden;
   background: rgba(15, 37, 54, 0.92);
   color: #fef7f4;
@@ -1260,6 +1340,11 @@ button {
     z-index: 9;
   }
 
+  .language-switcher {
+    top: 14px;
+    right: 14px;
+  }
+
   .pond-title:not(.compact) {
     top: auto;
     transform: none;
@@ -1326,7 +1411,7 @@ button {
 
   .scientific-popover {
     right: 16px;
-    top: 16px;
+    top: 72px;
     bottom: auto;
   }
 

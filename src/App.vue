@@ -1,8 +1,25 @@
 <template>
   <main class="pond-app" :class="{ 'is-planting': Boolean(travelingLily), 'has-lilies': lilies.length > 0 }">
     <div class="pond-title" :class="{ compact: titleCompact }">
-      <h1>The Embedding Pond</h1>
-      <h2>Grow beautiful waterlilies and learn how AI makes sense of your data.</h2>
+      <h1>{{ t('app.title') }}</h1>
+      <h2>{{ t('app.subtitle') }}</h2>
+    </div>
+
+    <div class="language-switcher" role="group" :aria-label="t('language.switcherAria')">
+      <button
+        type="button"
+        :class="{ active: currentLang === 'en' }"
+        @click="switchLanguage('en')"
+      >
+        {{ t('language.en') }}
+      </button>
+      <button
+        type="button"
+        :class="{ active: currentLang === 'de' }"
+        @click="switchLanguage('de')"
+      >
+        {{ t('language.de') }}
+      </button>
     </div>
 
     <PondScene
@@ -13,13 +30,13 @@
     />
 
     <button class="new-lily" @click="openCreator">
-      <span class="new-lily__label">{{ lilies.length === 0 ? 'Grow your first Waterlily!' : 'New Waterlily' }}</span>
+      <span class="new-lily__label">{{ lilies.length === 0 ? t('app.newLilyFirst') : t('app.newLily') }}</span>
       <span class="new-lily__emoji" aria-hidden="true">🪷</span>
     </button>
 
-    <button class="info-button" type="button" @click="toggleInfo" :aria-expanded="showInfo">
+    <button class="info-button" type="button" @click="toggleInfo" :aria-expanded="showInfo" :aria-label="t('app.info')">
       <span class="info-button__icon" aria-hidden="true">i</span>
-      <span>Info</span>
+      <span>{{ t('app.info') }}</span>
     </button>
 
     <button
@@ -33,7 +50,7 @@
       <span class="science-button__icon" aria-hidden="true">
         <i class="fa-solid fa-flask"></i>
       </span>
-      <span class="science-button__label">Science</span>
+      <span class="science-button__label">{{ t('app.science') }}</span>
     </button>
 
     <Transition name="overlay-fade">
@@ -105,6 +122,8 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import PondScene from './components/PondScene.vue'
 import LilyCreator from './components/LilyCreator.vue'
 import LilyPopover from './components/LilyPopover.vue'
@@ -115,7 +134,30 @@ import { computePcaLayout } from './utils/pca'
 import { embeddingToPath } from './utils/shape'
 import { buildVectorsForPca } from './utils/centroidAlign'
 
-const scientificMode = new URLSearchParams(window.location.search).get('mode') === 'scientific'
+const route = useRoute()
+const router = useRouter()
+const { t, locale } = useI18n()
+
+const currentLang = computed<'en' | 'de'>(() => (route.params.lang === 'de' ? 'de' : 'en'))
+const scientificMode = computed(() => route.query.mode === 'scientific')
+
+const switchLanguage = (lang: 'en' | 'de') => {
+  if (lang === currentLang.value) return
+  router.push({
+    name: 'home',
+    params: { lang },
+    query: route.query,
+    hash: route.hash,
+  })
+}
+
+watch(
+  () => currentLang.value,
+  (lang) => {
+    locale.value = lang
+  },
+  { immediate: true }
+)
 const alignmentEnabled = ref(false)
 const alignmentAlpha = ref(0.75)
 
@@ -270,7 +312,7 @@ const handleGrow = async (payload: { type: 'text' | 'image'; data: string }) => 
 
       draftLily.value = {
         id: crypto.randomUUID(),
-        label: payload.type === 'text' ? payload.data.slice(0, 42) : 'Image input',
+        label: payload.type === 'text' ? payload.data.slice(0, 42) : t('common.imageInput'),
         sourceType: payload.type,
         content: payload.data,
         embedding,
@@ -311,7 +353,7 @@ const handlePlant = async () => {
   // Compute PCA layout
   const nextLilies = [...lilies.value, draftLily.value]
   const vectorsForPca = buildVectorsForPca(nextLilies, {
-    enabled: scientificMode && alignmentEnabled.value,
+    enabled: scientificMode.value && alignmentEnabled.value,
     alpha: alignmentAlpha.value,
   })
   const layout = computePcaLayout(vectorsForPca)
@@ -361,7 +403,7 @@ const handlePlant = async () => {
 watch(
   () => [alignmentEnabled.value, alignmentAlpha.value],
   () => {
-    if (!scientificMode) return
+    if (!scientificMode.value) return
     if (travelingLily.value) return
     if (lilies.value.length < 2) return
 

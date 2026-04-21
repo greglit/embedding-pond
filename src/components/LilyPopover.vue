@@ -2,20 +2,20 @@
   <div ref="popoverRef" class="lily-popover" :class="{ 'is-hover': mode === 'hover' }" :style="popoverStyle">
     <header>
       <div>
-        <h3>Waterlily based on {{ lily.sourceType }}</h3>
+        <h3>{{ t('popover.title', { sourceType: lily.sourceType === 'text' ? t('creator.text') : t('creator.image') }) }}</h3>
       </div>
-      <IconButton v-if="mode === 'click'" label="Close" @click="emit('close')" />
+      <IconButton v-if="mode === 'click'" :label="t('common.close')" @click="emit('close')" />
     </header>
 
     <section class="popover-body">
-      <div class="input-preview" aria-label="Input preview">
+      <div class="input-preview" :aria-label="t('popover.inputPreviewAria')">
         <p v-if="lily.sourceType === 'text'" class="input-preview__text">{{ lily.content }}</p>
-        <img v-else :src="lily.content" alt="Input image" class="input-preview__image" />
+        <img v-else :src="lily.content" :alt="t('popover.inputImageAlt')" class="input-preview__image" />
       </div>
 
       <template v-if="mode === 'click'">
-        <h4>Embedding values</h4>
-        <div class="number-stream" aria-label="Embedding values">
+        <h4>{{ t('popover.embeddingValues') }}</h4>
+        <div class="number-stream" :aria-label="t('popover.embeddingValues')">
           <div class="number-stream__content number-stream__content--static">
             <span v-for="(value, index) in fullEmbedding" :key="index">{{ value }}</span>
           </div>
@@ -27,7 +27,10 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import IconButton from './IconButton.vue'
+
+const { t } = useI18n()
 
 type Lily = {
   sourceType: 'text' | 'image'

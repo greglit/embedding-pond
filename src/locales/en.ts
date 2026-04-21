@@ -1,0 +1,68 @@
+export default {
+  app: {
+    title: 'The Embedding Pond',
+    subtitle: 'Grow beautiful waterlilies and learn how AI makes sense of your data.',
+    newLilyFirst: 'Grow your first Waterlily!',
+    newLily: 'New Waterlily',
+    info: 'Info',
+    science: 'Science',
+  },
+  language: {
+    switcherAria: 'Language switcher',
+    en: 'EN',
+    de: 'DE',
+  },
+  common: {
+    close: 'Close',
+    imageInput: 'Image input',
+  },
+  creator: {
+    text: 'Text',
+    image: 'Image',
+    placeholder: 'Type a word, sentence, thought or memory...',
+    imagePreviewAlt: 'Preview',
+    helperStart: 'To begin, choose',
+    helperOr: 'or',
+    growButton: 'Grow it! 🪷',
+    growingButton: 'Growing... 🪷',
+    plantButton: 'Plant it! 🪷',
+    idle: {
+      title: 'Grow a waterlily from your data',
+      condensedMeaning: '"condensed meaning"',
+      embedding: 'embedding',
+      subheadStart: "We'll extract the",
+      subheadMiddle: 'from your data in form of a long list of numbers. This is called an',
+      subheadEnd: "From those numbers, we'll grow a beautiful, unique waterlily.",
+    },
+    embedding: {
+      title: 'Generating embeddings...',
+      subheadStart: 'These numbers capture the',
+      subheadEnd: 'of your input.',
+    },
+    ready: {
+      title: 'Look! A beautiful waterlily!',
+      essence: '"essence"',
+      subheadStart: 'This waterlily is shaped by the',
+      subheadMiddle: 'values and carries the',
+      subheadEnd: 'of your data.',
+    },
+  },
+  popover: {
+    title: 'Waterlily based on {sourceType}',
+    inputPreviewAria: 'Input preview',
+    inputImageAlt: 'Input image',
+    embeddingValues: 'Embedding values',
+  },
+  science: {
+    ariaLabel: 'Scientific controls',
+    title: 'Scientific Tools',
+    description: 'Tools to investigate the modality gap. For more info, click the Info button in the bottom-left corner.',
+    centroidAlignment: 'Centroid alignment (text -> image)',
+    strength: 'Strength',
+    restoreDefaults: 'Restore defaults',
+  },
+  info: {
+    ariaLabel: 'Information',
+    title: 'Info - Behind the Embedding Pond',
+  },
+}

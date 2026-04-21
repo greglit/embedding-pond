@@ -1,0 +1,68 @@
+export default {
+  app: {
+    title: 'Der Embedding-Teich',
+    subtitle: 'Lass Seerosen wachsen und entdecke, wie aus Daten Bedeutung wird.',
+    newLilyFirst: 'Pflanze deine erste Seerose!',
+    newLily: 'Neue Seerose',
+    info: 'Info',
+    science: 'Wissenschaft',
+  },
+  language: {
+    switcherAria: 'Sprachauswahl',
+    en: 'EN',
+    de: 'DE',
+  },
+  common: {
+    close: 'Schließen',
+    imageInput: 'Bildeingabe',
+  },
+  creator: {
+    text: 'Text',
+    image: 'Bild',
+    placeholder: 'Tippe ein Wort, einen Satz, einen Gedanken oder eine Erinnerung …',
+    imagePreviewAlt: 'Vorschau',
+    helperStart: 'Zum Start wähle',
+    helperOr: 'oder',
+    growButton: 'Wachsen lassen! 🪷',
+    growingButton: 'Wächst ... 🪷',
+    plantButton: 'Einpflanzen! 🪷',
+    idle: {
+      title: 'Lass aus deinen Daten eine Seerose wachsen',
+      condensedMeaning: 'Liste aus Zahlen, die die Bedeutung deiner Daten beinhaltet',
+      embedding: 'Embedding',
+      subheadStart: 'Wir übersetzen deine Eingabe in eine',
+      subheadMiddle: '. Diese Zahlenliste nennt man',
+      subheadEnd: 'Aus diesen Zahlen lassen wir dann deine eigene Seerose wachsen.',
+    },
+    embedding: {
+      title: 'Embedding wird berechnet ...',
+      subheadStart: 'Der Computer übersetzt deine Eingabe gerade in eine',
+      subheadEnd: '.',
+    },
+    ready: {
+      title: 'Da ist sie: Deine Seerose!',
+      essence: '"Bedeutung"',
+      subheadStart: 'Die Form dieser Seerose wird durch die',
+      subheadMiddle: '-Werte bestimmt und beinhaltet die',
+      subheadEnd: 'deiner Eingabe.',
+    },
+  },
+  popover: {
+    title: 'Seerose aus {sourceType}',
+    inputPreviewAria: 'Eingabevorschau',
+    inputImageAlt: 'Eingabebild',
+    embeddingValues: 'Embedding-Werte',
+  },
+  science: {
+    ariaLabel: 'Wissenschaftliche Steuerung',
+    title: 'Wissenschaftstools',
+    description: 'Werkzeuge, um die Modality Gap zu untersuchen. Mehr Kontext findest du im Info-Bereich unten links.',
+    centroidAlignment: 'Zentroid-Ausrichtung (Text -> Bild)',
+    strength: 'Stärke',
+    restoreDefaults: 'Standardwerte wiederherstellen',
+  },
+  info: {
+    ariaLabel: 'Informationen',
+    title: 'Info - Was steckt hinter dem Embedding-Teich',
+  },
+}
